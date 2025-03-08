@@ -1,11 +1,10 @@
 use std::env;
 
 use action::{Action, get_action};
-use io::{read, write};
-use todo::Todo;
-use util::generate_id;
+use io::read;
 mod action;
 mod io;
+mod service;
 mod todo;
 mod util;
 
@@ -16,54 +15,19 @@ fn main() {
     let action = get_action(&args);
     match action {
         Ok(Action::Add { title }) => match read(FILE_PATH) {
-            Ok(mut todos) => {
-                let todo = Todo::new(generate_id(&todos), title, false);
-                todos.push(todo);
-                write(&todos, FILE_PATH);
-            }
+            Ok(todos) => service::add(todos, title),
             Err(err) => println!("{}", err),
         },
         Ok(Action::List) => match read(FILE_PATH) {
-            Ok(todos) => {
-                if todos.is_empty() {
-                    println!("No TODOs found");
-                    return;
-                }
-                for todo in &todos {
-                    let status = if todo.get_completed() { "✓" } else { " " };
-                    println!("[{}] {}: {}", status, todo.get_id(), todo.get_title());
-                }
-            }
+            Ok(todos) => service::list(todos),
             Err(err) => println!("{}", err),
         },
         Ok(Action::Completed { id }) => match read(FILE_PATH) {
-            Ok(mut todos) => {
-                let id = id as usize - 1;
-                let todo = todos.get_mut(id);
-                match todo {
-                    Some(todo) => {
-                        todo.completed_todo();
-                        println!("{} completed", todo.get_title());
-                        write(&todos, FILE_PATH);
-                    }
-                    None => println!("none-existent ID"),
-                }
-            }
+            Ok(todos) => service::completed(todos, id),
             Err(err) => println!("{}", err),
         },
         Ok(Action::Delete { id }) => match read(FILE_PATH) {
-            Ok(mut todos) => {
-                let id = id as usize - 1;
-                if todos.len() > id {
-                    todos.remove(id);
-                } else {
-                    println!("none-existent ID")
-                }
-                for (index, todo) in todos.iter_mut().enumerate() {
-                    todo.update_id((index + 1) as u32);
-                }
-                write(&todos, FILE_PATH);
-            }
+            Ok(todos) => service::delete(todos, id),
             Err(err) => println!("{}", err),
         },
         Err(err) => println!("{}", err),
