@@ -13,23 +13,20 @@ const FILE_PATH: &str = "store/data.json";
 fn main() {
     let args: Vec<String> = env::args().collect();
     let action = get_action(&args);
+
+    let todos = match read(FILE_PATH) {
+        Ok(todos) => todos,
+        Err(err) => {
+            println!("{}", err);
+            return;
+        }
+    };
+
     match action {
-        Ok(Action::Add { title }) => match read(FILE_PATH) {
-            Ok(todos) => service::add(todos, title),
-            Err(err) => println!("{}", err),
-        },
-        Ok(Action::List) => match read(FILE_PATH) {
-            Ok(todos) => service::list(todos),
-            Err(err) => println!("{}", err),
-        },
-        Ok(Action::Completed { id }) => match read(FILE_PATH) {
-            Ok(todos) => service::completed(todos, id),
-            Err(err) => println!("{}", err),
-        },
-        Ok(Action::Delete { id }) => match read(FILE_PATH) {
-            Ok(todos) => service::delete(todos, id),
-            Err(err) => println!("{}", err),
-        },
+        Ok(Action::Add { title }) => service::add(todos, title),
+        Ok(Action::List) => service::list(todos),
+        Ok(Action::Completed { id }) => service::completed(todos, id),
+        Ok(Action::Delete { id }) => service::delete(todos, id),
         Err(err) => println!("{}", err),
     }
 }
