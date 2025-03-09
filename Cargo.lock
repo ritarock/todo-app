@@ -82,7 +82,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "todo-app"
+name = "todo"
 version = "0.1.0"
 dependencies = [
  "serde",

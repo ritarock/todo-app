@@ -48,3 +48,11 @@ pub fn delete(mut todos: Vec<Todo>, id: u32) {
     }
     write(&todos, FILE_PATH).unwrap_or_else(|err| println!("{}", err));
 }
+
+pub fn help() {
+    println!("Usage:");
+    println!("  add <task>");
+    println!("  list");
+    println!("  completed <id>");
+    println!("  delete <id>");
+}

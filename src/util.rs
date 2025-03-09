@@ -2,12 +2,10 @@ use crate::todo::Todo;
 
 pub fn parse_id(id: Option<&String>) -> Result<u32, String> {
     match id {
-        Some(id) => {
-            match id.parse::<u32>() {
-                Ok(id) => return  Ok(id),
-                Err(_) => Err(String::from("invalid ID"))
-            }
-        }
+        Some(id) => match id.parse::<u32>() {
+            Ok(id) => return Ok(id),
+            Err(_) => Err(String::from("invalid ID")),
+        },
         None => Err(String::from("missing ID")),
     }
 }

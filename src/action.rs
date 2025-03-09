@@ -6,6 +6,7 @@ pub enum Action {
     List,
     Completed { id: u32 },
     Delete { id: u32 },
+    Help,
 }
 
 pub fn get_action(args: &[String]) -> Result<Action, String> {
@@ -28,6 +29,7 @@ pub fn get_action(args: &[String]) -> Result<Action, String> {
                     Ok(id) => Ok(Action::Delete { id: id }),
                     Err(err) => Err(err),
                 },
+                "HELP" => Ok(Action::Help),
                 _ => Err(String::from("unknown command")),
             }
         }

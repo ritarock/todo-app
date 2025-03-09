@@ -27,6 +27,7 @@ fn main() {
         Ok(Action::List) => service::list(todos),
         Ok(Action::Completed { id }) => service::completed(todos, id),
         Ok(Action::Delete { id }) => service::delete(todos, id),
+        Ok(Action::Help) => service::help(),
         Err(err) => println!("{}", err),
     }
 }
