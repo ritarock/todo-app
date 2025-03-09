@@ -3,8 +3,9 @@ const FILE_PATH: &str = "store/data.json";
 
 pub fn add(mut todos: Vec<Todo>, title: String) {
     let todo = Todo::new(generate_id(&todos), title, false);
+    println!("add: {}", todo.get_title());
     todos.push(todo);
-    write(&todos, FILE_PATH);
+    write(&todos, FILE_PATH).unwrap_or_else(|err| println!("{}", err));
 }
 
 pub fn list(todos: Vec<Todo>) {
@@ -24,8 +25,8 @@ pub fn completed(mut todos: Vec<Todo>, id: u32) {
     match todo {
         Some(todo) => {
             todo.completed_todo();
-            println!("{} completed", todo.get_title());
-            write(&todos, FILE_PATH);
+            println!("completed: {}", todo.get_title());
+            write(&todos, FILE_PATH).unwrap_or_else(|err| println!("{}", err));
         }
         None => println!("none-existent ID"),
     }
@@ -36,7 +37,7 @@ pub fn delete(mut todos: Vec<Todo>, id: u32) {
     let todo = todos.get_mut(id);
     match todo {
         Some(todo) => {
-            println!("{} deleted", todo.get_title());
+            println!("deleted: {}", todo.get_title());
         }
         None => println!("none-existent ID"),
     }
@@ -45,5 +46,5 @@ pub fn delete(mut todos: Vec<Todo>, id: u32) {
     for (index, todo) in todos.iter_mut().enumerate() {
         todo.update_id((index + 1) as u32);
     }
-    write(&todos, FILE_PATH);
+    write(&todos, FILE_PATH).unwrap_or_else(|err| println!("{}", err));
 }
